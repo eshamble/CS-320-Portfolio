@@ -1,0 +1,210 @@
+import org.junit.Test;
+
+import java.util.Date;
+
+import static org.junit.jupiter.api.Assertions.*;
+
+public class AppointmentTest {
+
+    String expectedId = "Invalid id";
+    String expectedDate = "Invalid date";
+    String expectedDescription = "Invalid description";
+
+
+    //The appointment object shall have a required unique appointment ID string
+    // that cannot be longer than 10 characters. The appointment ID shall not be
+    // null and shall not be updatable.
+
+    //id
+
+    //Is id required?
+    // There is no constructor that does not contain id.
+
+    //Is id unique?
+    // This is addressed in the AppointmentServiceTest class.
+
+    @Test
+    public void req1ContainsIdSuccess(){
+        //Does appointment contain an id?
+        Date currentDate = new Date(System.currentTimeMillis());
+        Appointment appointment = new Appointment("appoint",new Date(currentDate.getTime() + 10),"description");
+        assertEquals("appoint",appointment.getId());
+    }
+
+    @Test
+    public void req1IdOver10CharactersCreateFails(){
+        //Does appointment's id need to be under 10 characters?
+        Date currentDate = new Date(System.currentTimeMillis());
+        Exception exception = assertThrows(IllegalArgumentException.class, () -> {
+            Appointment appointment = new Appointment("over 10 characters",new Date(currentDate.getTime() + 10),"description");
+        });
+
+        assertEquals(expectedId, exception.getMessage());
+    }
+
+    @Test
+    public void req1IdNullCreateFails(){
+        //Does appointment's id need to be not null?
+        Date currentDate = new Date(System.currentTimeMillis());
+        Exception exception = assertThrows(IllegalArgumentException.class, () -> {
+            Appointment appointment = new Appointment(null,new Date(currentDate.getTime() + 10),"description");
+        });
+
+        assertEquals(expectedId, exception.getMessage());
+    }
+
+    //Can id be updated?
+    //No, there is no setter for id.
+
+
+
+    //The appointment object shall have a required appointment Date field.
+    // The appointment Date field cannot be in the past. The appointment Date
+    // field shall not be null.
+
+    //date
+
+    //Is date required?
+    // There is no constructor that does not contain date.
+
+    @Test
+    public void req2ContainsDateSuccess(){
+        //Does appointment contain a date?
+        Date currentDate = new Date(System.currentTimeMillis());
+        Date date = new Date(currentDate.getTime() + 10);
+        Appointment appointment = new Appointment("appoint",date,"description");
+        assertEquals(date,appointment.getDate());
+    }
+
+    @Test
+    public void req2ModifyDateSuccess(){
+        //Can I modify the date?
+        Date currentDate = new Date(System.currentTimeMillis());
+        Date date = new Date(currentDate.getTime() + 10);
+        Appointment appointment = new Appointment("appoint",date,"description");
+        date = new Date(currentDate.getTime() + 100);
+        appointment.setDate(date);
+        assertEquals(date,appointment.getDate());
+    }
+
+    @Test
+    public void req2PastDateCreateFails(){
+        //Can the date be in the past?
+        Date currentDate = new Date(System.currentTimeMillis());
+        Date date = new Date(currentDate.getTime() - 1000);
+        Exception exception = assertThrows(IllegalArgumentException.class, () -> {
+            Appointment appointment = new Appointment("appoint", date, "description");
+        });
+        assertEquals(expectedDate, exception.getMessage());
+    }
+
+    @Test
+    public void req2PastDateModifyFails(){
+        //Can the date be in the past?
+        Date currentDate = new Date(System.currentTimeMillis());
+        Date date = new Date(currentDate.getTime() - 1000);
+        Appointment appointment = new Appointment("appoint", new Date(currentDate.getTime() + 10), "description");
+        Exception exception = assertThrows(IllegalArgumentException.class, () -> {
+            appointment.setDate(date);
+        });
+        assertEquals(expectedDate, exception.getMessage());
+    }
+
+    @Test
+    public void req2NullDateCreateFails(){
+        //Can the date be null?
+        Exception exception = assertThrows(IllegalArgumentException.class, () -> {
+            Appointment appointment = new Appointment("appoint", null, "description");
+        });
+        assertEquals(expectedDate, exception.getMessage());
+    }
+
+    @Test
+    public void req2NullDateModifyFails(){
+        //Can the date be null?
+        Date currentDate = new Date(System.currentTimeMillis());
+        Appointment appointment = new Appointment("appoint", new Date(currentDate.getTime() + 10), "description");
+        Exception exception = assertThrows(IllegalArgumentException.class, () -> {
+            appointment.setDate(null);
+        });
+        assertEquals(expectedDate, exception.getMessage());
+    }
+
+
+    //The appointment object shall have a required description String field
+    // that cannot be longer than 50 characters. The description field shall not
+    // be null.
+
+    //description
+
+    //Is description required?
+    // There is no constructor that does not contain description.
+
+    @Test
+    public void req3ContainsDescriptionSuccess(){
+        //Does appointment contain a description?
+        Date currentDate = new Date(System.currentTimeMillis());
+        Appointment appointment = new Appointment("appoint",new Date(currentDate.getTime() + 10),"description");
+        assertEquals("description",appointment.getDescription());
+    }
+
+    @Test
+    public void req3DescriptionModifySuccess(){
+        //Does appointment contain a description?
+        Date currentDate = new Date(System.currentTimeMillis());
+        Appointment appointment = new Appointment("appoint",new Date(currentDate.getTime() + 10),"description");
+        appointment.setDescription("DESCRIPTION");
+        assertEquals("DESCRIPTION",appointment.getDescription());
+    }
+
+    @Test
+    public void req3DescriptionOver50CharactersCreateFails(){
+        //Does appointment's description need to be under 50 characters?
+        Date currentDate = new Date(System.currentTimeMillis());
+        Exception exception = assertThrows(IllegalArgumentException.class, () -> {
+            Appointment appointment = new Appointment("appoint",new Date(currentDate.getTime() + 10),"" +
+                    "Lorem ipsum dolor sit amet, consectetur adipiscing" +
+                    "elit. Ut luctus metus at scelerisque fermentum. Curabitur felis" +
+                    "ante, molestie at blandit. ");
+        });
+
+        assertEquals(expectedDescription, exception.getMessage());
+    }
+
+    @Test
+    public void req3DescriptionOver50CharactersModifyFails(){
+        //Does appointment's description need to be under 50 characters?
+        Date currentDate = new Date(System.currentTimeMillis());
+        Appointment appointment = new Appointment("appoint",new Date(currentDate.getTime() + 10),"description");
+        Exception exception = assertThrows(IllegalArgumentException.class, () -> {
+            appointment.setDescription("Lorem ipsum dolor sit amet, consectetur adipiscing" +
+                    "elit. Ut luctus metus at scelerisque fermentum. Curabitur felis" +
+                    "ante, molestie at blandit. ");
+        });
+
+        assertEquals(expectedDescription, exception.getMessage());
+    }
+
+    @Test
+    public void req3DescriptionNullCreateFails(){
+        //Does appointment's description need to be under 50 characters?
+        Date currentDate = new Date(System.currentTimeMillis());
+        Exception exception = assertThrows(IllegalArgumentException.class, () -> {
+            Appointment appointment = new Appointment("appoint",new Date(currentDate.getTime() + 10),null);
+        });
+
+        assertEquals(expectedDescription, exception.getMessage());
+    }
+
+    @Test
+    public void req3DescriptionNullModifyFails(){
+        //Does appointment's description need to be under 50 characters?
+        Date currentDate = new Date(System.currentTimeMillis());
+        Appointment appointment = new Appointment("appoint",new Date(currentDate.getTime() + 10),"description");
+        Exception exception = assertThrows(IllegalArgumentException.class, () -> {
+            appointment.setDescription(null);
+        });
+
+        assertEquals(expectedDescription, exception.getMessage());
+    }
+}
